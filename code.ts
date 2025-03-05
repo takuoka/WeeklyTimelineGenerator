@@ -26,10 +26,21 @@ async function createTimeline(startDate: Date, endDate: Date, startX: number, st
     // 週の区切り線（FigJam用のConnector）
     const connector = figma.createConnector();
     
-    // 月をまたぐ線（次の週が新しい月になる場合）は太くする
-    const nextWeekStart = new Date(weekStart);
-    nextWeekStart.setDate(nextWeekStart.getDate() + 7);
-    const isMonthChange = nextWeekStart.getMonth() !== weekStart.getMonth();
+    // 前の週と月が変わった場合に線を太くする
+    let isMonthChange = false;
+    
+    // 最初の週の場合は常に通常の太さ
+    if (weekStart.getTime() === adjustedStartDate.getTime()) {
+      isMonthChange = false;
+    } else {
+      // 前の週の開始日を計算
+      const prevWeekStart = new Date(weekStart);
+      prevWeekStart.setDate(prevWeekStart.getDate() - 7);
+      
+      // 前の週と月が変わったかチェック
+      isMonthChange = prevWeekStart.getMonth() !== weekStart.getMonth();
+    }
+    
     connector.strokeWeight = isMonthChange ? 8 : 4;
     connector.strokes = [{type: 'SOLID', color: grayColor}];
     
