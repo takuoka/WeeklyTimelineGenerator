@@ -1,6 +1,6 @@
 {
   "name": "Weekly Planner",
-  "id": "1246692373990840162",
+  "id": "1479016127712780884",
   "api": "1.0.0",
   "main": "code.js",
   "capabilities": [],
@@ -10,6 +10,7 @@
     "figjam"
   ],
   "ui": "ui.html",
+  "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": [
       "none"
