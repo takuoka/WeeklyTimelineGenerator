@@ -37,14 +37,25 @@ async function createTimeline(startDate: Date, endDate: Date, startX: number, st
     const textWidth = 360;
     const grayColor = {r: 0.5, g: 0.5, b: 0.5};
 
-    // 週の区切り線
-    const line = figma.createLine();
-    line.x = xPosition;
-    line.y = startY + lineHeigt;
-    line.rotation = 90;
-    line.resize(lineHeigt, 0);
-    line.strokeWeight = 2;
-    line.strokes = [{type: 'SOLID', color: grayColor}];
+    // 週の区切り線（FigJam用のConnector）
+    const connector = figma.createConnector();
+    connector.strokeWeight = 2;
+    connector.strokes = [{type: 'SOLID', color: grayColor}];
+    
+    // 開始点と終了点を設定
+    const startPoint = {x: xPosition, y: startY};
+    const endPoint = {x: xPosition, y: startY + lineHeigt};
+    
+    // コネクタの位置を設定
+    connector.connectorStart = {
+      position: startPoint
+    };
+    connector.connectorEnd = {
+      position: endPoint
+    };
+    
+    figma.currentPage.appendChild(connector);
+    const line = connector;
 
             // 週の期間表示（例：3/3 - 3/9）を大きいフォントで表示
             const dateText = figma.createText();
