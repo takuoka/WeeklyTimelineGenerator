@@ -9,7 +9,7 @@ https://www.figma.com/@takuyaokamoto
 
 
 # Screenshot
-![cover](https://github.com/user-attachments/assets/e1dcdbb6-bba7-4dae-b10d-2b64eaa471c3)
+![cover](https://github.com/user-attachments/assets/270e2d73-32d3-482a-95a6-2497cc67bb20)
 
 
 # How to build
