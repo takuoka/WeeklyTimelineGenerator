@@ -7,53 +7,62 @@ async function createTimeline(startDate: Date, endDate: Date, startX: number, st
   await figma.loadFontAsync({ family: "Inter", style: "Medium" });
   await figma.loadFontAsync({ family: "Inter", style: "Bold" })
 
-  for (let day = startDate; day <= endDate; day.setDate(day.getDate() + 1)) {
-    const dayOfWeek = day.getDay();
+  // 開始日を月曜日に調整
+  const adjustedStartDate = new Date(startDate);
+  const startDayOfWeek = adjustedStartDate.getDay();
+  if (startDayOfWeek !== 1) { // 1は月曜日
+    // 前の週の月曜日に調整
+    const daysToSubtract = startDayOfWeek === 0 ? 6 : startDayOfWeek - 1;
+    adjustedStartDate.setDate(adjustedStartDate.getDate() - daysToSubtract);
+  }
 
-    // Ignore weekends
-    const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-    if (skipWeekends && isWeekend) continue;
+  // 週ごとに処理
+  for (let weekStart = new Date(adjustedStartDate); weekStart <= endDate; weekStart.setDate(weekStart.getDate() + 7)) {
+    // 週の終了日を計算
+    const weekEnd = new Date(weekStart);
+    if (skipWeekends) {
+      // 金曜日（週の開始から4日後）
+      weekEnd.setDate(weekStart.getDate() + 4);
+    } else {
+      // 日曜日（週の開始から6日後）
+      weekEnd.setDate(weekStart.getDate() + 6);
+    }
 
-    const lineHeigt = 1000
-    const textWidth = 120;
-    const isMonday = dayOfWeek === 1;
+    // 終了日を超えないように調整
+    if (weekEnd > endDate) {
+      weekEnd.setTime(endDate.getTime());
+    }
+
+    const lineHeigt = 1000;
+    const textWidth = 360;
     const grayColor = {r: 0.5, g: 0.5, b: 0.5};
-    const pinkColor = {r: 0.7, g: 0.5, b: 0.5};
 
+    // 週の区切り線
     const line = figma.createLine();
     line.x = xPosition;
     line.y = startY + lineHeigt;
     line.rotation = 90;
-    line.resize(lineHeigt, 0)
-
-    // Make the stroke weight larger at the beginning of each week
-    line.strokeWeight = isMonday ? 2 : 1;
+    line.resize(lineHeigt, 0);
+    line.strokeWeight = 2;
     line.strokes = [{type: 'SOLID', color: grayColor}];
 
-    const weekDayText = figma.createText();
-    weekDayText.characters = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day.getDay()];
-    weekDayText.resize(textWidth, 1);
-    weekDayText.x = xPosition;
-    weekDayText.y = startY + 20;
-    weekDayText.fontSize = 16;
-    weekDayText.fills = [{type: 'SOLID', color: grayColor}];
-    if (isWeekend) { weekDayText.fills = [{type: 'SOLID', color: pinkColor}]; }
-    weekDayText.textAlignHorizontal = 'CENTER';
-    figma.currentPage.appendChild(weekDayText);
+            // 週の期間表示（例：3/3 - 3/9）を大きいフォントで表示
+            const dateText = figma.createText();
+            const startMonth = weekStart.getMonth() + 1;
+            const startDay = weekStart.getDate();
+            const endMonth = weekEnd.getMonth() + 1;
+            const endDay = weekEnd.getDate();
+            dateText.characters = `${startMonth}/${startDay} - ${endMonth}/${endDay}`;
+            dateText.resize(textWidth, 1);
+            dateText.x = xPosition;
+            dateText.y = startY + 30;
+            dateText.fontSize = 40;
+            dateText.textAlignHorizontal = 'CENTER';
+            dateText.fontName = { family: "Inter", style: "Bold" };
+            dateText.fills = [{type: 'SOLID', color: grayColor}];
+            figma.currentPage.appendChild(dateText);
 
-    const dateText = figma.createText();
-    dateText.characters = day.toLocaleDateString().slice(0, -5).replace(/(^|\/)0+/g, "$1");
-    dateText.resize(textWidth, 1);
-    dateText.x = xPosition;
-    dateText.y = startY + 44;
-    dateText.fontSize = 24;
-    dateText.textAlignHorizontal = 'CENTER';
-    dateText.fontName = { family: "Inter", style: "Bold" };
-    dateText.fills = [{type: 'SOLID', color: grayColor}];
-    if (isWeekend) { dateText.fills = [{type: 'SOLID', color: pinkColor}]; }
-    figma.currentPage.appendChild(dateText);
-
-    nodes.push(line, dateText, weekDayText);
+            nodes.push(line, dateText);
 
     xPosition += textWidth;
   }
