@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Import Inter Font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      padding: 16px;
+      color: #333;
+    }
+
+    input, #create {
+      border-radius: 5px; /* Modify as needed */
+    }
+
+    #create {
+      background-color: #8257e5;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold; /* Optional: Makes the button text bold */
+    }
+
+    #create:hover {
+      background-color: #6d48d8;
+    }
+
+        /* New styles for the checkbox label */
+    label {
+      font-size: 0.8em;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Daily Planner</h2>
+  <p>Start: <input id="start-date" type="date"></p>
+  <p>End: <input id="end-date" type="date"></p>
+  <p><input id="skip-weekends" type="checkbox" checked><label for="skip-weekends">Skip Weekends</label></p>
+  <button id="create">Create</button>
+
+
+  <script>
+    // Functions for date manipulation
+    function formatDate(date) {
+      const yyyy = date.getFullYear();
+      let mm = date.getMonth() + 1; // getMonth() is zero-based
+      let dd = date.getDate();
+    
+      // Convert date to YYYY-MM-DD format
+      if (mm < 10) mm = '0' + mm;
+      if (dd < 10) dd = '0' + dd;
+      return yyyy + '-' + mm + '-' + dd;
+    }
+    
+    function getDateToday() {
+      return new Date();
+    }
+    
+    function getDateOneMonthFromNow() {
+      const oneMonthFromNow = new Date();
+      oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1);
+      return oneMonthFromNow;
+    }
+    
+    // Function for initializing date input fields
+    function initializeDateInputs() {
+      document.getElementById('start-date').value = formatDate(getDateToday());
+      document.getElementById('end-date').value = formatDate(getDateOneMonthFromNow());
+    }
+    
+    // Event handlers
+    window.onload = function() {
+      initializeDateInputs();
+    };
+    
+    document.getElementById('create').onclick = function() {
+      const startDate = document.getElementById('start-date').value;
+      const endDate = document.getElementById('end-date').value;
+      const skipWeekends = document.getElementById('skip-weekends').checked;
+    
+      parent.postMessage({ pluginMessage: {
+          type: 'create-timeline',
+          startDate: startDate,
+          endDate: endDate,
+          skipWeekends: skipWeekends
+        } }, '*');
+    };
+    </script>
+    
+</body>
+</html>
