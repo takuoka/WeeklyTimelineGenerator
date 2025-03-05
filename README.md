@@ -4,7 +4,7 @@
 
 
 ### figma community
-https://www.figma.com/community/plugin/1246692373990840162
+https://www.figma.com/@takuyaokamoto
 
 
 
