@@ -1,4 +1,4 @@
-async function createTimeline(startDate: Date, endDate: Date, startX: number, startY: number, skipWeekends: Boolean) {
+async function createTimeline(startDate: Date, endDate: Date, startX: number, startY: number) {
 
   const nodes: SceneNode[] = [];
   let xPosition = startX;
@@ -18,20 +18,6 @@ async function createTimeline(startDate: Date, endDate: Date, startX: number, st
 
   // 週ごとに処理
   for (let weekStart = new Date(adjustedStartDate); weekStart <= endDate; weekStart.setDate(weekStart.getDate() + 7)) {
-    // 週の終了日を計算
-    const weekEnd = new Date(weekStart);
-    if (skipWeekends) {
-      // 金曜日（週の開始から4日後）
-      weekEnd.setDate(weekStart.getDate() + 4);
-    } else {
-      // 日曜日（週の開始から6日後）
-      weekEnd.setDate(weekStart.getDate() + 6);
-    }
-
-    // 終了日を超えないように調整
-    if (weekEnd > endDate) {
-      weekEnd.setTime(endDate.getTime());
-    }
 
     const lineHeigt = 1000;
     const textWidth = 360;
@@ -39,7 +25,12 @@ async function createTimeline(startDate: Date, endDate: Date, startX: number, st
 
     // 週の区切り線（FigJam用のConnector）
     const connector = figma.createConnector();
-    connector.strokeWeight = 2;
+    
+    // 月をまたぐ線（次の週が新しい月になる場合）は太くする
+    const nextWeekStart = new Date(weekStart);
+    nextWeekStart.setDate(nextWeekStart.getDate() + 7);
+    const isMonthChange = nextWeekStart.getMonth() !== weekStart.getMonth();
+    connector.strokeWeight = isMonthChange ? 8 : 4;
     connector.strokes = [{type: 'SOLID', color: grayColor}];
     
     // 開始点と終了点を設定
@@ -57,13 +48,11 @@ async function createTimeline(startDate: Date, endDate: Date, startX: number, st
     figma.currentPage.appendChild(connector);
     const line = connector;
 
-            // 週の期間表示（例：3/3 - 3/9）を大きいフォントで表示
+            // 週の開始日表示（例：3/3~）を大きいフォントで表示
             const dateText = figma.createText();
             const startMonth = weekStart.getMonth() + 1;
             const startDay = weekStart.getDate();
-            const endMonth = weekEnd.getMonth() + 1;
-            const endDay = weekEnd.getDate();
-            dateText.characters = `${startMonth}/${startDay} - ${endMonth}/${endDay}`;
+            dateText.characters = `${startMonth}/${startDay}~`;
             dateText.resize(textWidth, 1);
             dateText.x = xPosition;
             dateText.y = startY + 30;
@@ -90,10 +79,9 @@ async function main() {
     if (msg.type === 'create-timeline') {
       const startDate = new Date(msg.startDate);
       const endDate = new Date(msg.endDate);
-      const skipWeekends: Boolean = msg.skipWeekends;
       const {x, y} = figma.viewport.center;
 
-      const nodes = await createTimeline(startDate, endDate, x, y, skipWeekends);
+      const nodes = await createTimeline(startDate, endDate, x, y);
 
       figma.currentPage.selection = nodes;
       figma.viewport.scrollAndZoomIntoView(nodes);

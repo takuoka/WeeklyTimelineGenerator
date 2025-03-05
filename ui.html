@@ -41,7 +41,6 @@
   <h2>Weekly Planner</h2>
   <p>Start: <input id="start-date" type="date"></p>
   <p>End: <input id="end-date" type="date"></p>
-  <p><input id="skip-weekends" type="checkbox" checked><label for="skip-weekends">Skip Weekends</label></p>
   <button id="create">Create</button>
 
 
@@ -82,13 +81,12 @@
     document.getElementById('create').onclick = function() {
       const startDate = document.getElementById('start-date').value;
       const endDate = document.getElementById('end-date').value;
-      const skipWeekends = document.getElementById('skip-weekends').checked;
     
       parent.postMessage({ pluginMessage: {
           type: 'create-timeline',
           startDate: startDate,
           endDate: endDate,
-          skipWeekends: skipWeekends
+          skipWeekends: false
         } }, '*');
     };
     </script>
