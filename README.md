@@ -2,7 +2,7 @@
 
 
 
-![Plugin icon - 12](https://github.com/takuoka/TimelineGenerator/assets/2075801/b233164d-941f-4ffe-98d7-13ed57d11994)
+![Plugin icon - 12]([https://github.com/takuoka/TimelineGenerator/assets/2075801/b233164d-941f-4ffe-98d7-13ed57d11994](https://github.com/takuoka/WeeklyTimelineGenerator/blob/main/icon.png?raw=true))
 
 ### figma community
 https://www.figma.com/community/plugin/1246692373990840162
@@ -10,7 +10,7 @@ https://www.figma.com/community/plugin/1246692373990840162
 
 
 # Screenshot
-![cover2](https://github.com/takuoka/TimelineGenerator/assets/2075801/760a5075-6d71-492f-ba9a-b0add9797b30)
+![cover2]([https://github.com/takuoka/TimelineGenerator/assets/2075801/760a5075-6d71-492f-ba9a-b0add9797b30](https://github.com/takuoka/WeeklyTimelineGenerator/blob/main/cover.png?raw=true))
 
 
 
